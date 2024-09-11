@@ -14,8 +14,7 @@ env:
   SHADOWSOCKSFILE: Shadowsocks.asp
   XRAY_FILE: xray
   CUSTOM: custom.sh
-  SRC_DIR: /opt/padavan
-  WORK_DIR: /opt/padavan/trunk
+  WORK_DIR: /opt/rt-n56u/trunk
 
 jobs:
   build:
@@ -38,30 +37,30 @@ jobs:
       if: (!cancelled())
       run: |
        df -hT $PWD
-       git clone --depth=1 $REPO_URL -b $REPO_BRANCH $SRC_DIR
+       git clone --depth=1 $REPO_URL -b $REPO_BRANCH /opt/rt-n56u
 
     - name: Load custom configuration
       run: |
-        mv -f $CONFIG_FILE $WORK_DIR/configs/templates/$TNAME.config
-        mv -f $XRAYCONFIG_FILE $WORK_DIR/user/shadowsocks/ss/genxrayconfig.lua
-        mv -f $SHADOWSOCKSFILE $WORK_DIR/user/www/n56u_ribbon_fixed/Shadowsocks.asp
-        mv -f $XRAY_FILE $WORK_DIR/user/xray/xray
-        mv -f $CUSTOM $WORK_DIR/
-        cd $WORK_DIR
+        mv -f $CONFIG_FILE /opt/rt-n56u/trunk/configs/templates/$TNAME.config
+        mv -f $XRAYCONFIG_FILE /opt/rt-n56u/trunk/user/shadowsocks/ss/genxrayconfig.lua
+        mv -f $SHADOWSOCKSFILE /opt/rt-n56u/trunk/user/www/n56u_ribbon_fixed/Shadowsocks.asp
+        mv -f $XRAY_FILE /opt/rt-n56u/trunk/user/xray/xray
+        mv -f $CUSTOM /opt/rt-n56u/trunk/
+        cd /opt/rt-n56u/trunk
         chmod +x build_firmware_modify && chmod +x $CUSTOM
         ./$CUSTOM
         
     - name: Download toolchain
       if: (!cancelled())
       run: |
-       cd $SRC_DIR/toolchain-mipsel
+       cd /opt/rt-n56u/toolchain-mipsel
        sh dl_toolchain.sh
 
     - name: Compile the firmware
       if: (!cancelled())
       id: compile
       run: |
-        cd $WORK_DIR
+        cd /opt/rt-n56u/trunk
         cp -f configs/templates/$TNAME.config .config
         sudo ./build_firmware_modify $TNAME 0 
         echo "status=success" >> $GITHUB_OUTPUT
@@ -72,7 +71,7 @@ jobs:
       if: steps.compile.outputs.status == 'success' && !cancelled()
       with:
         name: Padavan_firmware_${{ env.TNAME }}_${{ env.FILE_DATE }}
-        path: $WORK_DIR/images
+        path: /opt/rt-n56u/trunk/images
 
     - name: Generate release tag
       id: tag
@@ -84,8 +83,8 @@ jobs:
        echo "- Source code:" >> release.txt
        echo "  ${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}" >> release.txt
        echo "- ${{ env.TNAME }}.trx" >> release.txt
-       echo "  md5sum: $(md5sum $WORK_DIR/images/*.trx | cut -d" " -f1)" >> release.txt
-       echo "  sha256: $(sha256sum $WORK_DIR/images/*.trx | cut -d" " -f1)" >> release.txt
+       echo "  md5sum: $(md5sum /opt/rt-n56u/trunk/images/*.trx | cut -d" " -f1)" >> release.txt
+       echo "  sha256: $(sha256sum /opt/rt-n56u/trunk/images/*.trx | cut -d" " -f1)" >> release.txt
        echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware to release
@@ -97,8 +96,8 @@ jobs:
        tag_name: ${{ steps.tag.outputs.release_tag }}
        body_path: release.txt
        files: |
-        $WORK_DIR/images/*.trx
-        $WORK_DIR/configs/templates/${{ env.TNAME }}.config
+        /opt/rt-n56u/trunk/images/*.trx
+        /opt/rt-n56u/trunk/templates/${{ env.TNAME }}.config
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
