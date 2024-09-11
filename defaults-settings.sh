@@ -5,6 +5,9 @@ user_password="admin"
 lan_ip="192.168.1"
 pppoe_username=""
 pppoe_passwd=""
+pppoe_dns="0"
+pppoe_dns1="1.1.1.1"
+pppoe_dns2="1.0.0.1"
 wlan_2g_ssid="MiR3P"
 wlan_5g_ssid="MiR3P"
 wlan_guest_2g_ssid="MiR3P_pub"
@@ -38,3 +41,6 @@ sed -i 's/DEF_NTP_SERVER1.*/DEF_NTP_SERVER1 "'$ntp_server1'"/g' $default_file
 sed -i 's/{ "wan_proto", "dhcp" }/{ "wan_proto", "pppoe" }/g' $default_path/defaults.c
 sed -i 's/{ "wan_pppoe_username", "" }/{ "wan_pppoe_username", "'$pppoe_passwd'" }/g' $default_path/defaults.c
 sed -i 's/{ "wan_pppoe_passwd", "" }/{ "wan_pppoe_passwd", "'$pppoe_passwd'" }/g' $default_path/defaults.c
+sed -i 's/{ "wan_dnsenable_x", "1" }/{ "wan_dnsenable_x",  "'$pppoe_dns'" }/g' $default_path/defaults.c
+sed -i 's/{ "wan_dns1_x", "" }/{ "wan_dns1_x",  "'$pppoe_dns1'" }/g' $default_path/defaults.c
+sed -i 's/{ "wan_dns2_x", "" }/{ "wan_dns2_x",  "'$pppoe_dns2'" }/g' $default_path/defaults.c
