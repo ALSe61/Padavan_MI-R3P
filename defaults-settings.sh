@@ -3,6 +3,8 @@
 user_name="admin"
 user_password="admin"
 lan_ip="192.168.1"
+pppoe_username=""
+pppoe_passwd=""
 wlan_2g_ssid="MiR3P"
 wlan_5g_ssid="MiR3P"
 wlan_guest_2g_ssid="MiR3P_pub"
@@ -15,8 +17,8 @@ def_tz="UTC-5"
 ntp_server0="185.91.177.216"
 ntp_server1="91.209.94.10"
 version_time=$(date +%Y%m%d)
-#default_file="./user/shared/defaults.h"
-default_file="./defaults.h"
+default_file="./user/shared/defaults.h"
+default_path="./user/shared"
 
 sed -i 's/SYS_USER_ROOT.*/SYS_USER_ROOT "'$user_name'"/g' $default_file
 sed -i 's/DEF_ROOT_PASSWORD.*/DEF_ROOT_PASSWORD "'$user_password'"/g' $default_file
@@ -33,6 +35,6 @@ sed -i 's/DEF_WLAN_5G_CC.*/DEF_WLAN_5G_CC "'$wlan_5g_cc'"/g' $default_file
 sed -i 's/DEF_TIMEZONE.*/DEF_TIMEZONE "'$def_tz'"/g' $default_file
 sed -i 's/DEF_NTP_SERVER0.*/DEF_NTP_SERVER0 "'$ntp_server0'"/g' $default_file
 sed -i 's/DEF_NTP_SERVER1.*/DEF_NTP_SERVER1 "'$ntp_server1'"/g' $default_file
-#define DEF_TIMEZONE		"CST-8"
-#define DEF_NTP_SERVER0		"ntp1.aliyun.com"
-#define DEF_NTP_SERVER1		"time1.cloud.tencent.com"
+sed -i 's/{ "wan_proto", "dhcp" }/{ "wan_proto", "pppoe" }/g' $default_path/defaults.c
+sed -i 's/{ "wan_pppoe_username", "" }/{ "wan_pppoe_username", "'$pppoe_passwd'" }/g' $default_path/defaults.c
+sed -i 's/{ "wan_pppoe_passwd", "" }/{ "wan_pppoe_passwd", "'$pppoe_passwd'" }/g' $default_path/defaults.c
