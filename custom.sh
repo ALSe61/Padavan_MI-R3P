@@ -25,7 +25,7 @@ default_path="./user/shared"
 
 sed -i 's/SYS_USER_ROOT.*/SYS_USER_ROOT "'$user_name'"/g' $default_file
 sed -i 's/DEF_ROOT_PASSWORD.*/DEF_ROOT_PASSWORD "'$user_password'"/g' $default_file
-sed -i "s/192.168.2/$lan_ip/g" $default_file
+#sed -i "s/192.168.2/$lan_ip/g" $default_file
 sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=$version_time/g" ./versions.inc
 sed -i 's/DEF_WLAN_2G_SSID.*/DEF_WLAN_2G_SSID "'$wlan_2g_ssid'"/g' $default_file
 sed -i 's/DEF_WLAN_5G_SSID.*/DEF_WLAN_5G_SSID "'$wlan_5g_ssid'"/g' $default_file
